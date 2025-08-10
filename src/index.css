@@ -1,120 +1,229 @@
+/* 
+  Purpose:
+  1. pull in tailwind v4 layers
+  2. define CSS custom properties(brand, palette,radius)
+  3. Map tokens into Tailwind using @theme(v4 way)
+  4. Base styles, focus rings, reduced motion, safe areas
+  5.small utilities for layout shell
+*/
+
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
+/* 2) Root design tokens via CSS variables (light‑only for now) */
+:root {
+  /* Palette — tuned for grocery freshness */
+  --background: oklch(0.99 0.003 95); /* near-white bg */
+  --foreground: oklch(0.17 0.01 95); /* almost-black text */
 
+  --muted: oklch(0.96 0.01 95);
+  --muted-foreground: oklch(0.48 0.02 95);
+
+  /* Primary (fresh green) */
+  --primary: oklch(0.78 0.16 145); /* ~ #22C55E */
+  --primary-foreground: oklch(0.18 0.02 95); /* readable on green */
+
+  /* Accent (warm amber) */
+  --accent: oklch(0.78 0.14 80); /* ~ #F59E0B */
+  --accent-foreground: oklch(0.18 0.02 95);
+
+  /* Destructive (errors) */
+  --destructive: oklch(0.63 0.22 25);
+  --destructive-foreground: oklch(0.98 0.01 95);
+
+  /* Border / Input / Ring */
+  --border: oklch(0.92 0.01 95);
+  --input: oklch(0.98 0.003 95);
+  --ring: oklch(0.7 0.1 145); /* ring uses brand-ish hue */
+
+  /* Radii (rounded‑2xl aesthetic) */
+  --radius: 1rem; /* 16px */
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 6px 16px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 12px 28px rgba(0, 0, 0, 0.12);
+
+  /* more vibrant depth for interactions */
+  --primary-600: oklch(0.73 0.17 145);
+  --primary-700: oklch(0.67 0.17 145);
+  --accent-600: oklch(0.73 0.16 80);
+
+  /* gradient endpoints for glows/badges */
+  --grad-primary-start: oklch(0.83 0.14 145);
+  --grad-primary-end: oklch(0.72 0.18 145);
+  --grad-accent-start: oklch(0.86 0.12 80);
+  --grad-accent-end: oklch(0.74 0.16 80);
+}
+
+/* 3) Map CSS variables into Tailwind tokens with @theme (Tailwind v4) */
 @theme inline {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  /* Colors accessible via classes like bg-background, text-foreground, etc. */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  /* map the extra colors so we can use text-primary-600 bg-primary-700, etc. */
+  --color-primary-600: var(--primary-600);
+  --color-primary-700: var(--primary-700);
+  --color-accent-600: var(--accent-600);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Radius tokens usable via rounded-(sm|md|lg|xl|2xl) if we map them */
+  --radius-sm: calc(var(--radius) * 0.25);
+  --radius-md: calc(var(--radius) * 0.5);
+  --radius-lg: calc(var(--radius) * 0.75);
+  --radius-xl: var(--radius);
+  --radius-2xl: calc(var(--radius) * 1.25);
+
+  /* Shadows as utilities via shadow-[token] using arbitrary values */
 }
 
-:root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
-}
-
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
-}
-
+/* 4) Base element styles + focus rings */
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
+  html,
   body {
-    @apply bg-background text-foreground;
+    height: 100%;
+    /* Use Inter from index.html */
+    font-family: "Inter", ui-sans-serif, system-ui, -apple-system, Segoe UI,
+      Roboto, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+    background: var(--background);
+    color: var(--foreground);
   }
+
+  /* Nice focus ring that respects our ring token */
+  *:focus-visible {
+    outline: 2px solid var(--ring); /* visible ring color */
+    outline-offset: 2px; /* small gap for clarity */
+    border-radius: 0.25rem; /* avoid sharp highlight */
+  }
+
+  /* Borders default */
+  *,
+  *::before,
+  *::after {
+    border-color: var(--border);
+  }
+}
+
+/* 5) Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* 6) Safe-area padding helpers for notched devices */
+.safe-area-inline {
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+.safe-area-block {
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* 7) Utility: a soft shadow class using our tokens */
+.shadow-soft {
+  box-shadow: var(--shadow-md);
+}
+.shadow-lift {
+  box-shadow: var(--shadow-lg);
+}
+
+/* 15.2 Elevated focus ring utility (opt-in) */
+.focus-brand {
+  outline: 3px solid color-mix(in oklab, var(--ring) 80%, white);
+  outline-offset: 3px;
+  border-radius: 0.75rem;
+}
+
+/* 15.3 Frosted glass utility (for promos/bottom-nav if desired) */
+.glass {
+  background: color-mix(in oklab, var(--background) 70%, white);
+  backdrop-filter: saturate(140%) blur(10px);
+  -webkit-backdrop-filter: saturate(140%) blur(10px);
+  border: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
+}
+
+/* 15.4 Hover lift + subtle parallax shimmer for cards */
+.hover-elevate {
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s;
+}
+.hover-elevate:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in oklab, var(--muted) 70%, white),
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.2s linear infinite;
+}
+
+/* 15.5 Add-to-cart “bump” animation (used by stepper later) */
+@keyframes bump {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.06);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.bump {
+  animation: bump 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* Gradient text utility for hero headlines */
+.text-gradient-primary {
+  background: linear-gradient(
+    90deg,
+    var(--grad-primary-start),
+    var(--grad-primary-end)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Soft focus outline variant for prominent CTAs */
+.focus-cta {
+  outline: 3px solid color-mix(in oklab, var(--accent) 60%, white);
+  outline-offset: 3px;
+  border-radius: 999px;
+}
+
+/* Elevated button glow (opt-in) */
+.btn-glow {
+  box-shadow: 0 8px 24px color-mix(in oklab, var(--accent) 30%, black / 0%);
+}
+.btn-glow:hover {
+  box-shadow: 0 12px 32px color-mix(in oklab, var(--accent) 44%, black / 0%);
 }
