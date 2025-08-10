@@ -25,7 +25,7 @@ const Item = ({ to, icon: Icon, label }) => {
 
 export default function BottomNav() {
   return (
-    <nav className="md:hidden sticky bottom-0 safe-area-inline safe-area-block bg-background/95 backdrop-blur shadow-soft border-t border-border">
+    <nav className="md:hidden sticky bottom-0 safe-area-inline safe-area-block bg-white shadow-soft border-t border-border">
       <div className="mx-auto max-w-6xl px-3 py-1 flex items-center gap-2">
         <Item to="/" icon={Home} label="Home" />
         <Item to="" icon={Search} label="Search" />

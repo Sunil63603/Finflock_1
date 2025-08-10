@@ -1,74 +1,84 @@
 /* 
-  Purpose:
-  1. pull in tailwind v4 layers
-  2. define CSS custom properties(brand, palette,radius)
-  3. Map tokens into Tailwind using @theme(v4 way)
-  4. Base styles, focus rings, reduced motion, safe areas
-  5.small utilities for layout shell
+  Purpose: Enhanced FinFlock Design System with Spectacular Effects
+  Features: Advanced gradients, glassmorphism, animations, and premium aesthetics
 */
 
 @import "tailwindcss";
 @import "tw-animate-css";
 
-/* 2) Root design tokens via CSS variables (light‑only for now) */
+/* ===== ROOT DESIGN TOKENS WITH PREMIUM COLORS ===== */
 :root {
-  /* Palette — tuned for grocery freshness */
-  --background: oklch(0.99 0.003 95); /* near-white bg */
-  --foreground: oklch(0.17 0.01 95); /* almost-black text */
+  /* Premium Color Palette - Inspired by luxury brands */
+  --background: oklch(0.98 0.005 95); /* Ultra-pure white */
+  --foreground: oklch(0.12 0.015 95); /* Deep charcoal */
 
-  --muted: oklch(0.96 0.01 95);
-  --muted-foreground: oklch(0.48 0.02 95);
+  --muted: oklch(0.97 0.008 95);
+  --muted-foreground: oklch(0.45 0.025 95);
 
-  /* Primary (fresh green) */
-  --primary: oklch(0.78 0.16 145); /* ~ #22C55E */
-  --primary-foreground: oklch(0.18 0.02 95); /* readable on green */
+  /* Primary - Vibrant Emerald Green */
+  --primary: oklch(0.75 0.18 145); /* Rich emerald */
+  --primary-foreground: oklch(0.15 0.025 95);
 
-  /* Accent (warm amber) */
-  --accent: oklch(0.78 0.14 80); /* ~ #F59E0B */
-  --accent-foreground: oklch(0.18 0.02 95);
+  /* Accent - Golden Amber */
+  --accent: oklch(0.78 0.16 80); /* Warm gold */
+  --accent-foreground: oklch(0.15 0.025 95);
 
-  /* Destructive (errors) */
-  --destructive: oklch(0.63 0.22 25);
-  --destructive-foreground: oklch(0.98 0.01 95);
+  /* Destructive - Ruby Red */
+  --destructive: oklch(0.65 0.25 25);
+  --destructive-foreground: oklch(0.98 0.005 95);
 
-  /* Border / Input / Ring */
-  --border: oklch(0.92 0.01 95);
-  --input: oklch(0.98 0.003 95);
-  --ring: oklch(0.7 0.1 145); /* ring uses brand-ish hue */
+  /* Border & Input */
+  --border: oklch(0.94 0.008 95);
+  --input: oklch(0.99 0.003 95);
+  --ring: oklch(0.72 0.12 145);
 
-  /* Radii (rounded‑2xl aesthetic) */
-  --radius: 1rem; /* 16px */
+  /* Premium Gradients */
+  --grad-primary-start: oklch(0.78 0.16 145);
+  --grad-primary-end: oklch(0.68 0.2 145);
+  --grad-accent-start: oklch(0.82 0.14 80);
+  --grad-accent-end: oklch(0.72 0.18 80);
 
-  /* Shadows */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
-  --shadow-md: 0 6px 16px rgba(0, 0, 0, 0.08);
-  --shadow-lg: 0 12px 28px rgba(0, 0, 0, 0.12);
+  /* Enhanced Color Scale */
+  --primary-50: oklch(0.95 0.08 145);
+  --primary-100: oklch(0.9 0.12 145);
+  --primary-200: oklch(0.85 0.14 145);
+  --primary-300: oklch(0.8 0.16 145);
+  --primary-400: oklch(0.75 0.18 145);
+  --primary-500: oklch(0.7 0.2 145);
+  --primary-600: oklch(0.65 0.22 145);
+  --primary-700: oklch(0.6 0.24 145);
+  --primary-800: oklch(0.55 0.26 145);
+  --primary-900: oklch(0.5 0.28 145);
 
-  /* more vibrant depth for interactions */
-  --primary-600: oklch(0.73 0.17 145);
-  --primary-700: oklch(0.67 0.17 145);
-  --accent-600: oklch(0.73 0.16 80);
+  /* Radii */
+  --radius: 1.25rem; /* Enhanced rounded corners */
 
-  /* gradient endpoints for glows/badges */
-  --grad-primary-start: oklch(0.83 0.14 145);
-  --grad-primary-end: oklch(0.72 0.18 145);
-  --grad-accent-start: oklch(0.86 0.12 80);
-  --grad-accent-end: oklch(0.74 0.16 80);
+  /* Premium Shadows */
+  --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.08);
+  --shadow-medium: 0 8px 32px rgba(0, 0, 0, 0.12);
+  --shadow-lift: 0 16px 48px rgba(0, 0, 0, 0.16);
+  --shadow-glow: 0 0 40px rgba(34, 197, 94, 0.15);
+  --shadow-glow-accent: 0 0 40px rgba(245, 158, 11, 0.15);
 }
 
-/* 3) Map CSS variables into Tailwind tokens with @theme (Tailwind v4) */
+/* ===== THEME MAPPING ===== */
 @theme inline {
-  /* Colors accessible via classes like bg-background, text-foreground, etc. */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
-  /* map the extra colors so we can use text-primary-600 bg-primary-700, etc. */
+  --color-primary-50: var(--primary-50);
+  --color-primary-100: var(--primary-100);
+  --color-primary-200: var(--primary-200);
+  --color-primary-300: var(--primary-300);
+  --color-primary-400: var(--primary-400);
+  --color-primary-500: var(--primary-500);
   --color-primary-600: var(--primary-600);
   --color-primary-700: var(--primary-700);
-  --color-accent-600: var(--accent-600);
+  --color-primary-800: var(--primary-800);
+  --color-primary-900: var(--primary-900);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
@@ -77,96 +87,71 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 
-  /* Radius tokens usable via rounded-(sm|md|lg|xl|2xl) if we map them */
   --radius-sm: calc(var(--radius) * 0.25);
   --radius-md: calc(var(--radius) * 0.5);
   --radius-lg: calc(var(--radius) * 0.75);
   --radius-xl: var(--radius);
-  --radius-2xl: calc(var(--radius) * 1.25);
-
-  /* Shadows as utilities via shadow-[token] using arbitrary values */
+  --radius-2xl: calc(var(--radius) * 1.5);
+  --radius-3xl: calc(var(--radius) * 2);
 }
 
-/* 4) Base element styles + focus rings */
+/* ===== BASE STYLES WITH PREMIUM EFFECTS ===== */
 @layer base {
   html,
   body {
     height: 100%;
-    /* Use Inter from index.html */
     font-family: "Inter", ui-sans-serif, system-ui, -apple-system, Segoe UI,
       Roboto, Arial, "Apple Color Emoji", "Segoe UI Emoji";
     background: var(--background);
     color: var(--foreground);
+    scroll-behavior: smooth;
   }
 
-  /* Nice focus ring that respects our ring token */
+  /* Enhanced Focus Rings */
   *:focus-visible {
-    outline: 2px solid var(--ring); /* visible ring color */
-    outline-offset: 2px; /* small gap for clarity */
-    border-radius: 0.25rem; /* avoid sharp highlight */
+    outline: 3px solid var(--ring);
+    outline-offset: 3px;
+    border-radius: 0.5rem;
+    box-shadow: 0 0 0 6px rgba(34, 197, 94, 0.1);
   }
 
-  /* Borders default */
+  /* Premium Borders */
   *,
   *::before,
   *::after {
     border-color: var(--border);
   }
-}
 
-/* 5) Reduced motion support */
-@media (prefers-reduced-motion: reduce) {
-  * {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
+  /* Smooth Scrolling */
+  html {
+    scroll-behavior: smooth;
   }
 }
 
-/* 6) Safe-area padding helpers for notched devices */
-.safe-area-inline {
-  padding-left: env(safe-area-inset-left);
-  padding-right: env(safe-area-inset-right);
-}
-.safe-area-block {
-  padding-top: env(safe-area-inset-top);
-  padding-bottom: env(safe-area-inset-bottom);
-}
-
-/* 7) Utility: a soft shadow class using our tokens */
-.shadow-soft {
-  box-shadow: var(--shadow-md);
-}
-.shadow-lift {
-  box-shadow: var(--shadow-lg);
+/* ===== SPECTACULAR ANIMATIONS ===== */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
-/* 15.2 Elevated focus ring utility (opt-in) */
-.focus-brand {
-  outline: 3px solid color-mix(in oklab, var(--ring) 80%, white);
-  outline-offset: 3px;
-  border-radius: 0.75rem;
+@keyframes pulse-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(34, 197, 94, 0.6);
+    transform: scale(1.02);
+  }
 }
 
-/* 15.3 Frosted glass utility (for promos/bottom-nav if desired) */
-.glass {
-  background: color-mix(in oklab, var(--background) 70%, white);
-  backdrop-filter: saturate(140%) blur(10px);
-  -webkit-backdrop-filter: saturate(140%) blur(10px);
-  border: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
-}
-
-/* 15.4 Hover lift + subtle parallax shimmer for cards */
-.hover-elevate {
-  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s;
-}
-.hover-elevate:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
-}
-
-@keyframes shimmer {
+@keyframes shimmer-premium {
   0% {
     background-position: -200% 0;
   }
@@ -174,56 +159,268 @@
     background-position: 200% 0;
   }
 }
-.shimmer {
-  background: linear-gradient(
-    90deg,
-    transparent,
-    color-mix(in oklab, var(--muted) 70%, white),
-    transparent
-  );
-  background-size: 200% 100%;
-  animation: shimmer 1.2s linear infinite;
+
+@keyframes bounce-gentle {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
 }
 
-/* 15.5 Add-to-cart “bump” animation (used by stepper later) */
-@keyframes bump {
-  0% {
-    transform: scale(1);
+@keyframes rotate-slow {
+  from {
+    transform: rotate(0deg);
   }
-  40% {
-    transform: scale(1.06);
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes scale-in {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
   }
   100% {
     transform: scale(1);
+    opacity: 1;
   }
 }
-.bump {
-  animation: bump 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+
+/* ===== PREMIUM UTILITY CLASSES ===== */
+.glass-premium {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
-/* Gradient text utility for hero headlines */
-.text-gradient-primary {
+.glass-dark {
+  background: rgba(0, 0, 0, 0.1);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.shadow-soft {
+  box-shadow: var(--shadow-soft);
+}
+
+.shadow-medium {
+  box-shadow: var(--shadow-medium);
+}
+
+.shadow-lift {
+  box-shadow: var(--shadow-lift);
+}
+
+.shadow-glow {
+  box-shadow: var(--shadow-glow);
+}
+
+.shadow-glow-accent {
+  box-shadow: var(--shadow-glow-accent);
+}
+
+/* Enhanced Hover Effects */
+.hover-elevate {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-elevate:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: var(--shadow-lift);
+}
+
+.hover-glow:hover {
+  box-shadow: var(--shadow-glow);
+}
+
+.hover-glow-accent:hover {
+  box-shadow: var(--shadow-glow-accent);
+}
+
+/* Premium Button Effects */
+.btn-premium {
+  background: linear-gradient(
+    135deg,
+    var(--grad-primary-start),
+    var(--grad-primary-end)
+  );
+  border: none;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-premium::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
   background: linear-gradient(
     90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s;
+}
+
+.btn-premium:hover::before {
+  left: 100%;
+}
+
+.btn-premium:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glow);
+}
+
+/* Premium Card Effects */
+.card-premium {
+  background: white;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: var(--shadow-soft);
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.card-premium::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+}
+
+.card-premium:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-lift);
+}
+
+/* Floating Animation */
+.float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Pulse Glow */
+.pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Shimmer Effect */
+.shimmer-premium {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(34, 197, 94, 0.1),
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: shimmer-premium 2s linear infinite;
+}
+
+/* Bounce Gentle */
+.bounce-gentle {
+  animation: bounce-gentle 2s ease-in-out infinite;
+}
+
+/* Rotate Slow */
+.rotate-slow {
+  animation: rotate-slow 20s linear infinite;
+}
+
+/* Scale In */
+.scale-in {
+  animation: scale-in 0.6s ease-out;
+}
+
+/* Premium Gradients */
+.gradient-primary {
+  background: linear-gradient(
+    135deg,
+    var(--grad-primary-start),
+    var(--grad-primary-end)
+  );
+}
+
+.gradient-accent {
+  background: linear-gradient(
+    135deg,
+    var(--grad-accent-start),
+    var(--grad-accent-end)
+  );
+}
+
+.gradient-rainbow {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Text Gradients */
+.text-gradient-primary {
+  background: linear-gradient(
+    135deg,
     var(--grad-primary-start),
     var(--grad-primary-end)
   );
   -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   background-clip: text;
-  color: transparent;
 }
 
-/* Soft focus outline variant for prominent CTAs */
-.focus-cta {
-  outline: 3px solid color-mix(in oklab, var(--accent) 60%, white);
-  outline-offset: 3px;
-  border-radius: 999px;
+.text-gradient-accent {
+  background: linear-gradient(
+    135deg,
+    var(--grad-accent-start),
+    var(--grad-accent-end)
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-/* Elevated button glow (opt-in) */
-.btn-glow {
-  box-shadow: 0 8px 24px color-mix(in oklab, var(--accent) 30%, black / 0%);
+/* Premium Borders */
+.border-premium {
+  border: 2px solid transparent;
+  background: linear-gradient(white, white) padding-box,
+    linear-gradient(135deg, var(--primary), var(--accent)) border-box;
 }
-.btn-glow:hover {
-  box-shadow: 0 12px 32px color-mix(in oklab, var(--accent) 44%, black / 0%);
+
+/* Safe Area Utilities */
+.safe-area-inline {
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+.safe-area-block {
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
