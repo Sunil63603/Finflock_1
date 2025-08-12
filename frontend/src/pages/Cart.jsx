@@ -1,4 +1,4 @@
-//Purpose: Premium cart page with spectacular animations and premium styling
+//Purpose: Premium cart page with backend integration
 
 import React from "react";
 import { motion } from "framer-motion";
@@ -15,8 +15,15 @@ import {
   Shield,
   CreditCard,
 } from "lucide-react";
-import { useCart } from "../context/CartContext";
+
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  fetchCart,
+  setCartQty,
+  removeCartItem,
+  clearCart,
+} from "../lib/api.js";
 
 import { Button } from "../components/ui/button";
 import {
@@ -27,14 +34,88 @@ import {
 } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
 import { Separator } from "../components/ui/separator";
+import { toast } from "sonner";
 
 const formatMoney = (n) => `₹${Number(n).toLocaleString("en-IN")}`;
 
 export default function Cart() {
-  const { items, subtotal, totalItems, removeItem, addItem } = useCart();
+  const [cart, setCart] = useState({ items: [], subtotal: 0, totalItems: 0 });
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  if (totalItems <= 0) {
+  // Load cart data
+  const loadCart = async () => {
+    setLoading(true);
+    try {
+      const cartData = await fetchCart();
+      setCart(cartData);
+    } catch (error) {
+      console.error("Failed to load cart:", error);
+      toast.error("Failed to load cart");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadCart();
+  }, []);
+
+  // Update item quantity
+  const updateItemQty = async (productId, qty) => {
+    try {
+      const updatedCart = await setCartQty(productId, qty);
+      setCart(updatedCart);
+      toast.success("Cart updated successfully");
+    } catch (error) {
+      console.error("Failed to update cart:", error);
+      toast.error("Failed to update cart");
+      // Reload cart to ensure consistency
+      loadCart();
+    }
+  };
+
+  // Remove item from cart
+  const removeItem = async (productId) => {
+    try {
+      const updatedCart = await removeCartItem(productId);
+      setCart(updatedCart);
+      toast.success("Item removed from cart");
+    } catch (error) {
+      console.error("Failed to remove item:", error);
+      toast.error("Failed to remove item");
+      loadCart();
+    }
+  };
+
+  // Clear entire cart
+  const handleClearCart = async () => {
+    try {
+      await clearCart();
+      setCart({ items: [], subtotal: 0, totalItems: 0 });
+      toast.success("Cart cleared successfully");
+    } catch (error) {
+      console.error("Failed to clear cart:", error);
+      toast.error("Failed to clear cart");
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="p-6">
+        <div className="animate-pulse space-y-4">
+          <div className="h-8 bg-gray-200 rounded w-1/3"></div>
+          <div className="space-y-4">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="bg-gray-200 rounded-2xl h-32"></div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (cart.totalItems <= 0) {
     return (
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
@@ -92,14 +173,6 @@ export default function Cart() {
     );
   }
 
-  const cartItems = Array.from(items.entries()).map(
-    ([id, { product, qty }]) => ({
-      id,
-      product,
-      qty,
-    })
-  );
-
   return (
     <div className="space-y-8">
       {/* Enhanced Header */}
@@ -139,7 +212,7 @@ export default function Cart() {
             transition={{ delay: 0.2 }}
             className="text-muted-foreground"
           >
-            {totalItems} item{totalItems > 1 ? "s" : ""} in your cart
+            {cart.totalItems} item{cart.totalItems > 1 ? "s" : ""} in your cart
           </motion.p>
         </div>
 
@@ -159,7 +232,7 @@ export default function Cart() {
             animate={{ scale: 1 }}
             transition={{ delay: 0.5, type: "spring", stiffness: 200 }}
           >
-            {totalItems}
+            {cart.totalItems}
           </motion.div>
         </motion.div>
       </motion.div>
@@ -167,18 +240,27 @@ export default function Cart() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Enhanced Cart Items */}
         <div className="lg:col-span-2 space-y-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="text-xl font-semibold text-foreground mb-4"
-          >
-            Cart Items
-          </motion.div>
-
-          {cartItems.map((item, idx) => (
+          <div className="flex items-center justify-between mb-4">
             <motion.div
-              key={item.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="text-xl font-semibold text-foreground"
+            >
+              Cart Items
+            </motion.div>
+            <Button
+              variant="outline"
+              onClick={handleClearCart}
+              className="text-red-600 hover:bg-red-50 border-red-200"
+            >
+              Clear Cart
+            </Button>
+          </div>
+
+          {cart.items.map((item, idx) => (
+            <motion.div
+              key={item.product.id}
               initial={{ opacity: 0, y: 30, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{
@@ -212,7 +294,7 @@ export default function Cart() {
                       <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/20 to-accent/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     </motion.div>
 
-                    {/* Product Details - Enhanced for Mobile */}
+                    {/* Product Details */}
                     <div className="flex-1 min-w-0">
                       <motion.h3 className="font-bold text-lg text-foreground mb-2 line-clamp-2 group-hover:text-primary transition-colors duration-300">
                         {item.product.title}
@@ -227,7 +309,7 @@ export default function Cart() {
                         </span>
                       </div>
 
-                      {/* Enhanced Quantity Controls - Mobile Optimized */}
+                      {/* Quantity Controls */}
                       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                         <div className="flex items-center gap-2">
                           <motion.div
@@ -237,7 +319,9 @@ export default function Cart() {
                             <Button
                               size="icon"
                               variant="outline"
-                              onClick={() => removeItem(item.product)}
+                              onClick={() =>
+                                updateItemQty(item.product.id, item.qty - 1)
+                              }
                               className="h-9 w-9 rounded-full border-2 border-primary/20 hover:border-primary/40 hover:bg-primary/10 transition-all duration-200"
                             >
                               <Minus size={16} className="text-primary" />
@@ -246,7 +330,7 @@ export default function Cart() {
 
                           <motion.div
                             className="min-w-12 text-center text-lg font-bold text-primary bg-primary/5 rounded-xl px-3 py-1"
-                            key={`${item.id}-${item.qty}`}
+                            key={`${item.product.id}-${item.qty}`}
                             initial={{ scale: 0.8, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             transition={{
@@ -264,7 +348,9 @@ export default function Cart() {
                           >
                             <Button
                               size="icon"
-                              onClick={() => addItem(item.product)}
+                              onClick={() =>
+                                updateItemQty(item.product.id, item.qty + 1)
+                              }
                               className="h-9 w-9 rounded-full bg-gradient-to-r from-primary to-primary-600 text-white shadow-glow hover:shadow-glow-accent transition-all duration-200"
                             >
                               <Plus size={16} />
@@ -272,7 +358,7 @@ export default function Cart() {
                           </motion.div>
                         </div>
 
-                        {/* Enhanced Price Display - Mobile Optimized */}
+                        {/* Price Display */}
                         <div className="text-left sm:text-right">
                           <div className="text-lg font-bold text-foreground">
                             {formatMoney(item.product.price * item.qty)}
@@ -286,7 +372,7 @@ export default function Cart() {
                       </div>
                     </div>
 
-                    {/* Enhanced Remove Button */}
+                    {/* Remove Button */}
                     <motion.div
                       whileHover={{ scale: 1.1, rotate: 15 }}
                       whileTap={{ scale: 0.9 }}
@@ -295,7 +381,7 @@ export default function Cart() {
                       <Button
                         size="icon"
                         variant="ghost"
-                        onClick={() => removeItem(item.product)}
+                        onClick={() => removeItem(item.product.id)}
                         className="h-10 w-10 rounded-full hover:bg-destructive/10 hover:text-destructive transition-all duration-200"
                       >
                         <Trash2 size={18} />
@@ -325,14 +411,14 @@ export default function Cart() {
             </CardHeader>
 
             <CardContent className="p-6 space-y-6">
-              {/* Enhanced Price Breakdown */}
+              {/* Price Breakdown */}
               <div className="space-y-3">
                 <div className="flex justify-between items-center text-sm">
                   <span className="text-muted-foreground">
-                    Subtotal ({totalItems} items)
+                    Subtotal ({cart.totalItems} items)
                   </span>
                   <span className="font-medium text-foreground">
-                    {formatMoney(subtotal)}
+                    {formatMoney(cart.subtotal)}
                   </span>
                 </div>
 
@@ -346,7 +432,7 @@ export default function Cart() {
                 <div className="flex justify-between items-center text-sm">
                   <span className="text-muted-foreground">Taxes</span>
                   <span className="font-medium text-foreground">
-                    {formatMoney(Math.round(subtotal * 0.05))}
+                    {formatMoney(Math.round(cart.subtotal * 0.05))}
                   </span>
                 </div>
 
@@ -355,12 +441,14 @@ export default function Cart() {
                 <div className="flex justify-between items-center text-lg font-bold">
                   <span className="text-foreground">Total</span>
                   <span className="text-2xl bg-gradient-to-r from-primary to-primary-600 bg-clip-text text-transparent">
-                    {formatMoney(subtotal + Math.round(subtotal * 0.05))}
+                    {formatMoney(
+                      cart.subtotal + Math.round(cart.subtotal * 0.05)
+                    )}
                   </span>
                 </div>
               </div>
 
-              {/* Enhanced Features */}
+              {/* Features */}
               <div className="space-y-3">
                 {[
                   {
@@ -393,7 +481,7 @@ export default function Cart() {
                 ))}
               </div>
 
-              {/* Enhanced Checkout Button */}
+              {/* Checkout Button */}
               <motion.div
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
@@ -409,7 +497,7 @@ export default function Cart() {
                 </Button>
               </motion.div>
 
-              {/* Enhanced Security Note */}
+              {/* Security Note */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}

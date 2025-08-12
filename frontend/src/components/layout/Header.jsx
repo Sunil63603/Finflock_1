@@ -1,15 +1,30 @@
-//Purpose: Premium sticky header with spectacular effects and glassmorphism
+//Purpose: Premium sticky header with real-time cart count
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Search, ShoppingCart, Sparkles } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useAuth } from "../../store/auth";
+import { fetchCart } from "../../lib/api.js";
 
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 
 export default function Header() {
   const navigate = useNavigate();
+  const { token } = useAuth();
+  const [cartCount, setCartCount] = useState(0);
+
+  // Fetch cart count when token changes
+  useEffect(() => {
+    if (token) {
+      fetchCart()
+        .then((cart) => setCartCount(cart.totalItems))
+        .catch((err) => console.error("Failed to fetch cart count:", err));
+    } else {
+      setCartCount(0);
+    }
+  }, [token]);
 
   return (
     <motion.header
@@ -71,7 +86,7 @@ export default function Header() {
           </motion.div>
         </div>
 
-        {/* Right: Enhanced Cart Button */}
+        {/* Right: Enhanced Cart Button with Real Count */}
         <div className="hidden md:block col-span-8 md:col-span-2 lg:col-span-2 flex justify-end">
           <motion.div
             whileHover={{ y: -2, scale: 1.05 }}
@@ -85,6 +100,18 @@ export default function Header() {
               <motion.div className="absolute inset-0 bg-gradient-to-r from-primary-600 via-primary-700 to-primary-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <ShoppingCart size={20} className="mr-2 relative z-10" />
               <span className="relative z-10">Cart</span>
+
+              {/* Cart Count Badge */}
+              {cartCount > 0 && (
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-accent flex items-center justify-center text-white text-xs font-bold shadow-glow-accent"
+                >
+                  {cartCount > 99 ? "99+" : cartCount}
+                </motion.div>
+              )}
+
               <motion.div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
             </Button>
           </motion.div>

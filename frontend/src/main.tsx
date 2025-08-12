@@ -8,14 +8,20 @@ import "./index.css";
 import App from "./App.tsx";
 
 import { CartProvider } from "./context/CartContext";
+import { AuthProvider } from "./store/auth";
+
+import { Toaster } from "sonner";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <CartProvider>
-      {/* BrowserRouter provides client-side routing */}
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </CartProvider>
+    <AuthProvider>
+      <CartProvider>
+        {/* BrowserRouter provides client-side routing */}
+        <BrowserRouter>
+          <App />
+          <Toaster position="top-center" richColors closeButton />
+        </BrowserRouter>
+      </CartProvider>
+    </AuthProvider>
   </StrictMode>
 );
