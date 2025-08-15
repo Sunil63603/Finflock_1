@@ -9,8 +9,8 @@ import { Input } from "../components/ui/input";
 import { toast } from "sonner";
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("rahul.verma@example.com");
+  const [password, setPassword] = useState("mno123");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
